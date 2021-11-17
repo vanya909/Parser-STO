@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -132,4 +130,3 @@ dmypy.json
 
 # All docx docs
 *.docx
->>>>>>> d046799917d432fee3879d5832bd4dafd2e0b915

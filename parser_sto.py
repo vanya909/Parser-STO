@@ -1,3 +1,4 @@
+import os
 import docx
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Cm, Pt
@@ -35,9 +36,11 @@ class DocxWriter:
 
         return par
 
+
     def add_bold_text_paragraph(self, text):
         par = self.text_paragraph()
         par.add_run(text).bold = True
+
 
     def add_image(self, text=''):
         par = self.doc.add_paragraph()
@@ -47,12 +50,16 @@ class DocxWriter:
         run = par.add_run()
         self.picture_count += 1
         picture_path = f'Screenshots/{self.picture_count}.png'
-        run.add_picture(picture_path, width=Cm(10), height=Cm(10))
 
+        if '_MEIPASS2' in os.environ:
+            filename = os.path.join(os.environ['_MEIPASS2'], picture_path)
+
+        run.add_picture(picture_path, width=Cm(10), height=Cm(10))
         image_text = par.add_run(f'\nРисунок {self.picture_count}' +
                                 (f' – {text}' if len(text) else ''))
         font = image_text.font
         font.size = Pt(12)
+
 
     def save_docx(self, name):
         self.doc.save(name)
