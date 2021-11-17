@@ -5,7 +5,7 @@ from docx.shared import Cm, Pt
 
 
 class DocxWriter:
-    """A class which will write our text to a docx file"""
+    """Класс, который записывает данные в Docx документ"""
     def __init__(self):
         self.doc = docx.Document()
         self.picture_count = 0
@@ -54,7 +54,7 @@ class DocxWriter:
         if '_MEIPASS2' in os.environ:
             filename = os.path.join(os.environ['_MEIPASS2'], picture_path)
 
-        run.add_picture(picture_path, width=Cm(10), height=Cm(10))
+        run.add_picture(picture_path)
         image_text = par.add_run(f'\nРисунок {self.picture_count}' +
                                 (f' – {text}' if len(text) else ''))
         font = image_text.font
