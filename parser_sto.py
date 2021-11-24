@@ -1,13 +1,17 @@
 import os
 import docx
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Cm, Pt
+from docx.shared import Cm, Pt, Mm
 
 
 class DocxWriter:
     """Класс, который записывает данные в Docx документ"""
     def __init__(self):
         self.doc = docx.Document()
+        section = self.doc.sections[0]
+        section.page_height = Mm(297)
+        section.page_width = Mm(210)
+
         self.picture_count = 0
         normal_style = self.doc.styles['Normal']
 
