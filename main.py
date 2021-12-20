@@ -1,8 +1,9 @@
+import logging
 import os
 from time import sleep
 from parser_sto import DocxWriter
 
-if __name__ == '__main__':
+def main():
     docx_writer = DocxWriter()
     filename = 'input data.txt'
 
@@ -16,3 +17,12 @@ if __name__ == '__main__':
     docx_writer.save_docx('Отчет.docx')
     print('Successfull! This window will automatically close in 3 seconds...')
     sleep(3)
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.CRITICAL,
+                        filename='parser_sto.log',
+                        format='%(asctime)s %(levelname)s:%(message)s')
+    try:
+        main()
+    except Exception as e:
+        logging.critical(e)
