@@ -1,0 +1,16 @@
+# For tests
+pytest
+
+# Code style linter
+flake8
+
+# Check quotes
+flake8-quotes
+
+# Sorting imports
+isort
+
+# For canvinient debugging
+ipdb
+
+-r production.txt
