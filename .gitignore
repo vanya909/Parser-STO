@@ -129,4 +129,12 @@ dmypy.json
 .pyre/
 
 # All docx docs
-*.docx
+parser_sto/**/*.docx
+
+# All pictures
+parser_sto/**/*.png
+parser_sto/**/*.jpeg
+parser_sto/**/*.jpg
+
+# All txt files
+parser_sto/**/*.txt
