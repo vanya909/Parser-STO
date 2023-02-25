@@ -12,6 +12,8 @@ class DocxWriter:
     def __init__(self):
         """Init document."""
 
+        # Mapping defines which format method will be used according to format
+        # symbol found on the line
         self.FORMAT_MAPPING = {
             "\\*": self.switch_keep_with_next,
             "\\!": self.add_bold_run,
