@@ -33,7 +33,7 @@ def handle_error(func):
         except Exception as error:
             message = "Some unknown error occurred"
             if isinstance(error, ParsingError):
-                message = error.message
+                message = str(error)
             print_error(message)
             log_error(error)
             raise SystemExit()
