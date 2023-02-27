@@ -5,8 +5,11 @@ from docx.shared import Cm, Mm, Pt
 from docx.table import Table
 from docx.text.paragraph import Paragraph
 
-from .constants import SCREENSHOTS_DIRECTORY_NAME, TITLE_TEMPLATE_NAME
-from .settings import TITLE_SETTINGS
+from .constants import (
+    SCREENSHOTS_DIRECTORY_NAME,
+    TITLE_CONSTANTS,
+    TITLE_TEMPLATE_NAME,
+)
 from .utils import get_config_setting, get_project_directory_name
 
 
@@ -56,7 +59,10 @@ class DocxWriter:
         if "{" not in text or "}" not in text:
             return text
 
-        paragraph.text = text.format(**TITLE_SETTINGS)
+        paragraph.text = text.format(**{
+            constant: get_config_setting(constant, section="title")
+            for constant in TITLE_CONSTANTS
+        })
 
     def format_title_table(self, table: Table):
         """Return formatted cells of table using settings for title page."""

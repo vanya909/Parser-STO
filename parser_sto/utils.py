@@ -41,7 +41,6 @@ def handle_error(func):
     return inner
 
 
-@handle_error
 def get_config_setting(setting: str, section: str = "main") -> str:
     """Return setting from config.
 
