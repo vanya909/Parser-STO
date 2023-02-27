@@ -2,8 +2,12 @@ import docx
 from docx.document import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Cm, Mm, Pt
+from docx.table import Table
+from docx.text.paragraph import Paragraph
 
-from .utils import get_project_directory_name, get_screenshots_directory_name
+from .constants import SCREENSHOTS_DIRECTORY_NAME, TITLE_TEMPLATE_NAME
+from .settings import TITLE_SETTINGS
+from .utils import get_config_setting, get_project_directory_name
 
 
 class DocxWriter:
@@ -21,7 +25,7 @@ class DocxWriter:
             "": self.add_run,
         }
 
-        self.doc: Document = docx.Document()
+        self.doc: Document = self.parse_title()
         self.picture_count = 0
         self.keep_with_next = False
 
@@ -29,6 +33,37 @@ class DocxWriter:
         self.init_font(normal_style.font)
         self.init_format(normal_style.paragraph_format)
         self.init_a4(self.doc.sections[0])
+
+    def parse_title(self) -> Document:
+        """Return parsed title list."""
+        title = docx.Document(
+            f"{get_project_directory_name()}/"
+            f"{get_config_setting(TITLE_TEMPLATE_NAME, section='title')}.docx"
+        )
+
+        for paragraph in title.paragraphs:
+            self.format_title_paragraph(paragraph)
+
+        for table in title.tables:
+            self.format_title_table(table)
+
+        return title
+
+    def format_title_paragraph(self, paragraph: Paragraph):
+        """Return formatted paragraph using settings for title page."""
+        text = paragraph.text
+
+        if "{" not in text or "}" not in text:
+            return text
+
+        paragraph.text = text.format(**TITLE_SETTINGS)
+
+    def format_title_table(self, table: Table):
+        """Return formatted cells of table using settings for title page."""
+        for row_num in range(len(table.rows)):
+            for col_num in range(len(table.columns)):
+                cell = table.cell(row_idx=row_num, col_idx=col_num)
+                self.format_title_paragraph(cell.paragraphs[0])
 
     def init_a4(self, section):
         """Init A4 document."""
@@ -120,7 +155,7 @@ class DocxWriter:
         """Path to picture."""
         return (
             f"{get_project_directory_name()}/"
-            f"{get_screenshots_directory_name()}/"
+            f"{get_config_setting(SCREENSHOTS_DIRECTORY_NAME)}/"
             f"{self.picture_count}.png"
         )
 

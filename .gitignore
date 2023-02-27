@@ -130,6 +130,8 @@ dmypy.json
 
 # All docx docs
 parser_sto/**/*.docx
+# Except template
+!parser_sto/template.docx
 
 # All pictures
 parser_sto/**/*.png
