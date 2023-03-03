@@ -11,7 +11,7 @@ LOGGING_CONFIG_ON_ERROR = {
 }
 
 
-def log_error(error: Exception):
+def log_error(error: Exception) -> None:
     """Log critical error message."""
     logging.basicConfig(**LOGGING_CONFIG_ON_ERROR)
     logging.critical(error)

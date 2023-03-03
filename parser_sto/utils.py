@@ -1,6 +1,8 @@
 import configparser
 import os
 from contextlib import contextmanager
+from io import TextIOWrapper
+from typing import Any, Callable, Generator
 
 from rich import print as rprint
 from rich.panel import Panel
@@ -24,10 +26,10 @@ config.read(SETTINGS_FILE)
 main_config = config["main"]
 
 
-def handle_error(func):
+def handle_error(func: Callable) -> Callable:
     """Decorator to handle occurred error."""
 
-    def inner(*args, **kwargs):
+    def inner(*args, **kwargs):  # type: ignore
         try:
             return func(*args, **kwargs)
         except Exception as error:
@@ -65,7 +67,7 @@ def get_project_directory_name() -> str:
 
 
 @contextmanager
-def get_input_file(*args, **kwargs):
+def get_input_file(**kwargs: Any) -> Generator[TextIOWrapper, None, None]:
     """Context manager to get and open input file or raise error.
 
     Raises:
@@ -84,7 +86,7 @@ def get_input_file(*args, **kwargs):
         yield ipdata
 
 
-def get_full_output_file_name():
+def get_full_output_file_name() -> str:
     """Return output file name."""
     output_directory = get_config_setting(OUTPUT_DIRECTORY_NAME)
     # Append slash only if directory is not empty
@@ -107,11 +109,11 @@ def beautify_string(string: str) -> str:
     return string.strip("'").strip('"')
 
 
-def print_success(text: str):
+def print_success(text: str) -> None:
     """Print success message."""
     rprint(Panel(text, style="green bold"))
 
 
-def print_error(text: str):
+def print_error(text: str) -> None:
     """Print error message."""
     rprint(Panel(text, style="red bold"))
