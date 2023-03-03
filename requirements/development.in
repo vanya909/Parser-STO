@@ -10,7 +10,10 @@ flake8-quotes
 # Sorting imports
 isort
 
-# For canvinient debugging
+# For convinient debugging
 ipdb
+
+# For checking type hinting
+mypy
 
 -r production.txt

@@ -8,7 +8,7 @@ from .utils import (
 
 
 @handle_error
-def main():
+def main() -> None:
     """Create document, write data from input file and save it."""
     docx_writer = DocxWriter()
     out = get_full_output_file_name()
