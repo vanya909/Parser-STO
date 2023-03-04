@@ -17,7 +17,6 @@ from .exceptions import (
     MissingConfigSection,
     MissingConfigSetting,
     MissingInputFile,
-    ParsingError,
 )
 from .log_utils import log_error
 
@@ -33,10 +32,7 @@ def handle_error(func: Callable) -> Callable:
         try:
             return func(*args, **kwargs)
         except Exception as error:
-            message = "Some unknown error occurred"
-            if isinstance(error, ParsingError):
-                message = str(error)
-            print_error(message)
+            print_error(error)
             log_error(error)
             raise SystemExit()
 
@@ -114,6 +110,6 @@ def print_success(text: str) -> None:
     rprint(Panel(text, style="green bold"))
 
 
-def print_error(text: str) -> None:
+def print_error(text: str | BaseException) -> None:
     """Print error message."""
-    rprint(Panel(text, style="red bold"))
+    rprint(Panel(str(text), style="red bold"))
