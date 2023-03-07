@@ -13,8 +13,8 @@ from docx.text.run import Run
 
 from .constants import (
     SCREENSHOTS_DIRECTORY_NAME,
-    TITLE_CONSTANTS,
-    TITLE_TEMPLATE_NAME,
+    TEMPLATE_CONSTANTS,
+    TEMPLATE_NAME,
 )
 from .utils import get_config_setting, get_project_directory_name
 
@@ -34,7 +34,7 @@ class DocxWriter:
             "": self.add_run,
         }
 
-        self.doc: Document = self.parse_title()
+        self.doc: Document = self.parse_template()
         self.picture_count = 0
         self.keep_with_next = False
 
@@ -43,39 +43,39 @@ class DocxWriter:
         self.init_format(normal_style.paragraph_format)
         self.init_a4(self.doc.sections[0])
 
-    def parse_title(self) -> Document:
-        """Return parsed title list."""
-        title = docx.Document(
+    def parse_template(self) -> Document:
+        """Return parsed template list."""
+        template = docx.Document(
             f"{get_project_directory_name()}/"
-            f"{get_config_setting(TITLE_TEMPLATE_NAME, section='title')}.docx"
+            f"{get_config_setting(TEMPLATE_NAME, section='template')}.docx"
         )
 
-        for paragraph in title.paragraphs:
-            self.format_title_paragraph(paragraph)
+        for paragraph in template.paragraphs:
+            self.format_template_paragraph(paragraph)
 
-        for table in title.tables:
-            self.format_title_table(table)
+        for table in template.tables:
+            self.format_template_table(table)
 
-        return title
+        return template
 
-    def format_title_paragraph(self, paragraph: Paragraph) -> None:
-        """Return formatted paragraph using settings for title page."""
+    def format_template_paragraph(self, paragraph: Paragraph) -> None:
+        """Return formatted paragraph using settings for template page."""
         text = paragraph.text
 
         if "{" not in text or "}" not in text:
             return
 
         paragraph.text = text.format(**{
-            constant: get_config_setting(constant, section="title")
-            for constant in TITLE_CONSTANTS
+            constant: get_config_setting(constant, section="template")
+            for constant in TEMPLATE_CONSTANTS
         })
 
-    def format_title_table(self, table: Table) -> None:
-        """Return formatted cells of table using settings for title page."""
+    def format_template_table(self, table: Table) -> None:
+        """Return formatted cells of table using settings for template page."""
         for row_num in range(len(table.rows)):
             for col_num in range(len(table.columns)):
                 cell = table.cell(row_idx=row_num, col_idx=col_num)
-                self.format_title_paragraph(cell.paragraphs[0])
+                self.format_template_paragraph(cell.paragraphs[0])
 
     def init_a4(self, section: Section) -> None:
         """Init A4 document."""

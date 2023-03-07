@@ -1,6 +1,6 @@
 SETTINGS_FILE = "parsersettings.ini"
 
-TITLE_TEMPLATE_NAME = "titleTemplateName"
+TEMPLATE_NAME = "templateName"
 INSTITUTE = "institute"
 DEPARTMENT = "department"
 WORK_TYPE = "workType"
@@ -11,8 +11,8 @@ TEACHER_NAME = "teacherName"
 STUDENT_NAME = "studentName"
 YEAR = "year"
 
-TITLE_CONSTANTS = [
-    TITLE_TEMPLATE_NAME,
+TEMPLATE_CONSTANTS = [
+    TEMPLATE_NAME,
     INSTITUTE,
     DEPARTMENT,
     WORK_TYPE,
