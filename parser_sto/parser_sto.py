@@ -1,3 +1,4 @@
+import itertools
 import re
 from pathlib import Path
 from typing import Any, Callable
@@ -58,16 +59,19 @@ class DocxWriter:
         }
 
     @property
-    def image_extensions(self) -> list[str]:
+    def image_extensions(self) -> itertools.chain:
         """List of all image extensions."""
         image_extensions = [
-            ".PNG",
-            ".JPEG",
-            ".JPG",
-            ".GIF",
+            ".png",
+            ".jpeg",
+            ".jpg",
+            ".gif",
         ]
 
-        return image_extensions + list(map(str.lower, image_extensions))
+        return itertools.chain(
+            image_extensions,
+            map(str.upper, image_extensions),
+        )
 
     def parse_template(self) -> Document:
         """Return parsed template list."""
