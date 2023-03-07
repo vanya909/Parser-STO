@@ -1,3 +1,5 @@
+import re
+from pathlib import Path
 from typing import Any, Callable
 
 import docx
@@ -16,7 +18,8 @@ from .constants import (
     TEMPLATE_CONSTANTS,
     TEMPLATE_NAME,
 )
-from .utils import get_config_setting, get_project_directory_name
+from .exceptions import MissingImage, MissingImageName
+from .utils import PictureMeta, get_config_setting, get_project_directory_name
 
 
 class DocxWriter:
@@ -24,16 +27,6 @@ class DocxWriter:
 
     def __init__(self) -> None:
         """Init document."""
-
-        # Mapping defines which format method will be used according to format
-        # symbol found on the line
-        self.FORMAT_MAPPING: dict[str, Callable] = {
-            "\\*": self.switch_keep_with_next,
-            "\\!": self.add_bold_run,
-            "&": self.add_image,
-            "": self.add_run,
-        }
-
         self.doc: Document = self.parse_template()
         self.picture_count = 0
         self.keep_with_next = False
@@ -42,6 +35,39 @@ class DocxWriter:
         self.init_font(normal_style.font)
         self.init_format(normal_style.paragraph_format)
         self.init_a4(self.doc.sections[0])
+
+    @property
+    def document_picture_name(self) -> str:
+        """Standard name of picture."""
+        return f"Рисунок {self.picture_count}"
+
+    @property
+    def format_mapping(self) -> dict[str, Callable]:
+        """Return format mapping.
+
+        Each format symbol has a corresponding format function. So, this
+        mapping just defines which format method will be used according to
+        format symbol found on the line.
+
+        """
+        return {
+            "\\*": self.switch_keep_with_next,
+            "\\!": self.add_bold_run,
+            "&": self.add_image,
+            "": self.add_run,
+        }
+
+    @property
+    def image_extensions(self) -> list[str]:
+        """List of all image extensions."""
+        image_extensions = [
+            ".PNG",
+            ".JPEG",
+            ".JPG",
+            ".GIF",
+        ]
+
+        return image_extensions + list(map(str.lower, image_extensions))
 
     def parse_template(self) -> Document:
         """Return parsed template list."""
@@ -95,9 +121,8 @@ class DocxWriter:
     def write_to_doc(self, text: str) -> None:
         """Write text to document."""
         format_symbol = self.parse_format_symbols(text)
-        format_method = self.FORMAT_MAPPING[format_symbol]
+        format_method = self.format_mapping[format_symbol]
         clean_text = text.strip(format_symbol).strip()
-
         format_method(clean_text)
 
     def get_text_paragraph(
@@ -133,10 +158,15 @@ class DocxWriter:
         run = par.add_run()
 
         self.picture_count += 1
-        run.add_picture(self.picture_path)
+        meta = self.get_picture_meta(text)
+        path = self.get_picture_path(meta.name)
+        run.add_picture(path)
 
-        picture_description = f" – {text}" if len(text) else ""
-        image_text = par.add_run(f"\n{self.picture_name}{picture_description}")
+        description = f" – {meta.description}" if len(meta.description) else ""
+        image_text = par.add_run(
+            f"\n{self.document_picture_name}"
+            f"{description}"
+        )
 
         font = image_text.font
         font.size = Pt(12)
@@ -152,23 +182,65 @@ class DocxWriter:
         empty string.
 
         """
-        for symbol in self.FORMAT_MAPPING:
+        for symbol in self.format_mapping:
             if text.startswith(symbol):
                 return symbol
         return ""
 
-    @property
-    def picture_name(self) -> str:
-        """Standard name of picture."""
-        return f"Рисунок {self.picture_count}"
+    def get_picture_meta(self, text: str) -> PictureMeta:
+        """Return parsed name and description of the picture.
 
-    @property
-    def picture_path(self) -> str:
-        """Path to picture."""
-        return (
-            f"{get_project_directory_name()}/"
-            f"{get_config_setting(SCREENSHOTS_DIRECTORY_NAME)}/"
-            f"{self.picture_count}.png"
+        Raises:
+            MissingImageName: If image name was not provided.
+
+        """
+        found_match = re.match(r"<(.+?)>(.*)", text)
+
+        if found_match is None:
+            raise MissingImageName(image=text)
+
+        return PictureMeta(
+            name=found_match.group(1),
+            description=found_match.group(2),
+        )
+
+    def get_picture_path(self, picture_name: str) -> str:
+        """Return path to picture.
+
+        Raises:
+            MissingImage: If there are no images with this name.
+
+        """
+        base_directory = Path(get_project_directory_name())
+        pictures_folder = get_config_setting(SCREENSHOTS_DIRECTORY_NAME)
+
+        path = base_directory / pictures_folder / picture_name
+        extension_provided = "." in picture_name
+
+        if extension_provided and not path.is_file():
+            raise MissingImage(
+                imagename=picture_name,
+                picturesfolder=pictures_folder,
+            )
+        elif not extension_provided:
+            path = self.get_path_with_extension(path)
+
+        return str(path)
+
+    def get_path_with_extension(self, path_wo_extension: Path) -> Path:
+        """Find extension of the given file and return full path.
+
+        Raises:
+            MissingImage: If no images were found with this name.
+
+        """
+        for extension in self.image_extensions:
+            if (path := path_wo_extension.with_suffix(extension)).is_file():
+                return path
+
+        raise MissingImage(
+            imagename=path_wo_extension.name,
+            picturesfolder=get_config_setting(SCREENSHOTS_DIRECTORY_NAME),
         )
 
     def save_docx(self, name: str) -> None:

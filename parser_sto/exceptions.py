@@ -18,6 +18,29 @@ class MissingInputFile(ParsingError):
     )
 
 
+class MissingImageName(ParsingError):
+    """Error when image name was not provided."""
+
+    message: str = (
+        "Отсутствует имя изображения для {image}.\n"
+        "Для вставки изображения необходимо указать его имя в треугольных "
+        "скобках сразу после амперсанда. Например:\n"
+        "&<picture1.png> Полезный рисунок.\n"
+        "или\n"
+        "&<picture1> Полезный рисунок."
+    )
+
+
+class MissingImage(ParsingError):
+    """Error when image with provided name was not found."""
+
+    message: str = (
+        "Изображение с именем {imagename} не найдено.\n"
+        "Убедитесь, что в папке {picturesfolder} есть изображение "
+        "с именем {imagename}"
+    )
+
+
 class MissingConfigSection(ParsingError):
     """Error when certain config section is not presented in `ini` file."""
 

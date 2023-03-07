@@ -1,6 +1,7 @@
 import configparser
 import os
 from contextlib import contextmanager
+from dataclasses import dataclass
 from io import TextIOWrapper
 from typing import Any, Callable, Generator
 
@@ -113,3 +114,14 @@ def print_success(text: str) -> None:
 def print_error(text: str | BaseException) -> None:
     """Print error message."""
     rprint(Panel(str(text), style="red bold"))
+
+
+@dataclass
+class PictureMeta:
+    """Represent picture meta.
+
+    It contains in-folder picture name and picture description.
+
+    """
+    name: str
+    description: str
