@@ -5,9 +5,6 @@ from dataclasses import dataclass
 from io import TextIOWrapper
 from typing import Any, Callable, Generator
 
-from rich import print as rprint
-from rich.panel import Panel
-
 from .constants import (
     INPUT_FILE_NAME,
     OUTPUT_DIRECTORY_NAME,
@@ -108,12 +105,12 @@ def beautify_string(string: str) -> str:
 
 def print_success(text: str) -> None:
     """Print success message."""
-    rprint(Panel(text, style="green bold"))
+    print(f"Success: {text}")
 
 
 def print_error(text: str | BaseException) -> None:
     """Print error message."""
-    rprint(Panel(str(text), style="red bold"))
+    print(f"Error: {text}")
 
 
 @dataclass
