@@ -36,18 +36,10 @@ lxml==4.9.2
     # via
     #   -r requirements/production.txt
     #   python-docx
-markdown-it-py==2.2.0
-    # via
-    #   -r requirements/production.txt
-    #   rich
 matplotlib-inline==0.1.6
     # via ipython
 mccabe==0.7.0
     # via flake8
-mdurl==0.1.2
-    # via
-    #   -r requirements/production.txt
-    #   markdown-it-py
 mypy==1.0.1
     # via -r requirements/development.in
 mypy-extensions==1.0.0
@@ -73,15 +65,10 @@ pycodestyle==2.10.0
 pyflakes==3.0.1
     # via flake8
 pygments==2.14.0
-    # via
-    #   -r requirements/production.txt
-    #   ipython
-    #   rich
+    # via ipython
 pytest==7.2.1
     # via -r requirements/development.in
 python-docx==0.8.11
-    # via -r requirements/production.txt
-rich==13.3.1
     # via -r requirements/production.txt
 six==1.16.0
     # via asttokens
