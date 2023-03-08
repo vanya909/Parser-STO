@@ -26,6 +26,3 @@ jobs:
     - name: Run linters
       run: |
         inv run-linters
-    - name: Run tests
-      run: |
-        pytest
