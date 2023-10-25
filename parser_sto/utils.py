@@ -10,6 +10,7 @@ from .constants import (
     OUTPUT_DIRECTORY_NAME,
     OUTPUT_FILE_NAME,
     SETTINGS_FILE,
+    WORKING_DIRECTORY,
 )
 from .exceptions import (
     MissingConfigSection,
@@ -60,6 +61,18 @@ def get_project_directory_name() -> str:
     return os.path.dirname(os.path.realpath(__file__))
 
 
+def get_working_directory_name() -> str:
+    """Return working directory of project.
+
+    Working directory is a directory where all in/out files are located.
+
+    """
+    return (
+        f"{get_project_directory_name()}/"
+        f"{get_config_setting(WORKING_DIRECTORY)}"
+    )
+
+
 @contextmanager
 def get_input_file(**kwargs: Any) -> Generator[TextIOWrapper, None, None]:
     """Context manager to get and open input file or raise error.
@@ -69,7 +82,7 @@ def get_input_file(**kwargs: Any) -> Generator[TextIOWrapper, None, None]:
 
     """
     input_filename = (
-        f"{get_project_directory_name()}/"
+        f"{get_working_directory_name()}/"
         f"{get_config_setting(INPUT_FILE_NAME)}"
     )
 
@@ -85,7 +98,7 @@ def get_full_output_file_name() -> str:
     output_directory = get_config_setting(OUTPUT_DIRECTORY_NAME)
     # Append slash only if directory is not empty
     output_directory += "/" if output_directory else ""
-    full_out_directory = f"{get_project_directory_name()}/{output_directory}"
+    full_out_directory = f"{get_working_directory_name()}/{output_directory}"
 
     if output_directory and not os.path.isdir(full_out_directory):
         os.mkdir(full_out_directory)

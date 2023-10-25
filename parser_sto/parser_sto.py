@@ -20,7 +20,7 @@ from .constants import (
     TEMPLATE_NAME,
 )
 from .exceptions import MissingImage, MissingImageName
-from .utils import PictureMeta, get_config_setting, get_project_directory_name
+from .utils import PictureMeta, get_config_setting, get_working_directory_name
 
 
 class DocxWriter:
@@ -76,7 +76,7 @@ class DocxWriter:
     def parse_template(self) -> Document:
         """Return parsed template list."""
         template = docx.Document(
-            f"{get_project_directory_name()}/"
+            f"{get_working_directory_name()}/"
             f"{get_config_setting(TEMPLATE_NAME, section='template')}.docx"
         )
 
@@ -215,7 +215,7 @@ class DocxWriter:
             MissingImage: If there are no images with this name.
 
         """
-        base_directory = Path(get_project_directory_name())
+        base_directory = Path(get_working_directory_name())
         pictures_folder = get_config_setting(SCREENSHOTS_DIRECTORY_NAME)
 
         path = base_directory / pictures_folder / picture_name

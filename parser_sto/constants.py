@@ -25,6 +25,7 @@ TEMPLATE_CONSTANTS = [
 ]
 
 INPUT_FILE_NAME = "InputFileName"
+WORKING_DIRECTORY = "WorkingDirectory"
 SCREENSHOTS_DIRECTORY_NAME = "ScreenshotsDirectoryName"
 OUTPUT_DIRECTORY_NAME = "OutputDirectoryName"
 OUTPUT_FILE_NAME = "OutputFileName"
